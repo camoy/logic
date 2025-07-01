@@ -19,7 +19,9 @@
   '("logic-lib"))
 
 (define build-deps
-  '("automata-lib"
+  '("automata-doc"
+    "sandbox-lib"
+    "automata-lib"
     "chk-lib"
     "racket-doc"
     "scribble-lib"
