@@ -15,9 +15,9 @@
 		     syntax/parse
                      syntax/parse/class/struct-id)
          automata/machine
-         racket/match
          racket/set
          syntax-spec-v3
+         "match.rkt"
          "private/pltl/formula.rkt"
          "private/pltl/monitor.rkt")
 
@@ -34,19 +34,6 @@
  (extension-class pltl-macro
    #:binding-space pltl-space)
 
- (nonterminal pltl-pat
-  #:description "PLTL pattern"
-  #:bind-literal-set pltl-pat-literals
-  #:allow-extension pltl-macro
-  #:binding-space pltl-space
-
-  (~> x:id #'(var x))
-  (var x:pltl-var)
-  (and p:pltl-pat q:pltl-pat)
-  (? e:racket-expr)
-  (app e:racket-expr p:pltl-pat)
-  (x:struct-id p:pltl-pat ...))
-
  (nonterminal pltl-formula
   #:description "PLTL formula"
   #:bind-literal-set pltl-formula-literals
@@ -61,7 +48,8 @@
   #:binding (scope (bind x) ... f)
   (previous f:pltl-formula)
   (since f:pltl-formula g:pltl-formula)
-  p:pltl-pat)
+  pat:match-pat
+  #:binding (scope (import pat)))
 
  (host-interface/expression
   (pltl f:pltl-formula)
@@ -146,14 +134,14 @@
 
 (define-syntax compile-pltl-pat
   (syntax-parser
-    [(_ p)
-     #:with (bv ...) (free-identifiers #'p #:allow-host? #t)
+    [(_ pat)
+     #:with (bv ...) (binding-identifiers #'pat #:allow-host? #t)
      #'(pat-fml (set 'bv ...)
                 (λ (x)
                   (match x
-                    [p (hash (~@ 'bv bv) ...)]
+                    [pat (hash (~@ 'bv bv) ...)]
                     [_ #f]))
-                'p)]))
+                'pat)]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; runtime

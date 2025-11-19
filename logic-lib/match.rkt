@@ -107,7 +107,6 @@
                    (do-match-struct target (a ...) (p ...) on-success on-fail)
                    on-fail))]))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; match expanders
 
